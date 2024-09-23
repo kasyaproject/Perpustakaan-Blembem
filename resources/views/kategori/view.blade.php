@@ -1,3 +1,37 @@
+@if (session('success'))
+    <div id="popup-modal" tabindex="-1" class="flex dark:bg-gray-500 dark:bg-opacity-75 overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+        <div class="relative p-4 w-full max-w-md max-h-full">
+            <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">            
+                <div class="p-4 md:p-5 text-center">
+                    <svg class="mx-auto mb-4 text-gray-400 w-12 h-12 dark:text-gray-200" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
+                    </svg>
+                    <h3 class="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">{{ session('success') }}</h3>
+                    <button id="popup-close-button" data-modal-hide="popup-modal" type="button" class="mt-4 text-white bg-blue-600 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center">
+                        Oke
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+@elseif (session('error'))
+    <div id="popup-modal" tabindex="-1" class="flex dark:bg-gray-500 dark:bg-opacity-75 overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+        <div class="relative p-4 w-full max-w-md max-h-full">
+            <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+                <div class="p-4 md:p-5 text-center">
+                    <svg class="mx-auto mb-4 text-gray-400 w-12 h-12 dark:text-gray-200" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
+                    </svg>
+                    <h3 class="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">{{ session('error') }}</h3>
+                    <button id="popup-close-button" data-modal-hide="popup-modal" type="button" class="mt-4 text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center">
+                        Oke
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>    
+@endif
+
 <x-app-layout>  
     @section('sidebar#2', 'block')
     @section('sidebar#kategori', 'bg-gray-100 dark:bg-gray-700')
@@ -108,72 +142,7 @@
                 </div>
             </div>
         </div>
-    </div> 
-
-    {{-- Modal Edit --}}
-    {{-- @foreach ($akun as $data)
-        <div id="static-modal-{{ $data->id }}" data-modal-backdrop="static" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
-            <div class="relative p-4 w-full max-w-xl max-h-full">
-                <!-- Modal content -->
-                <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
-                    <!-- Modal header -->
-                    <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
-                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
-                            Ubah data akun
-                        </h3>
-                        <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-toggle="static-modal-{{ $data->id }}">
-                            <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
-                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
-                            </svg>
-                            <span class="sr-only">Close modal</span>
-                        </button>
-                    </div>
-                    <!-- Modal body -->
-                    <form action="{{ route('akun.update', ['id' => $data->id]) }}" class="w-full p-4 md:p-5" method="POST" onsubmit="return validateForm()">
-                        @csrf
-                        @method('PUT')
-                        <div class="grid gap-4 mb-4 grid-cols-2">
-                            <div class="col-span-2">
-                                <label for="name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Name</label>
-                                <input type="text" name="name" id="name" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" 
-                                value="{{ $data->name }}" required>
-                            </div>
-                            <div class="col-span-2">
-                                <label for="email" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Email</label>
-                                <input type="text" name="email" id="email" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                                value="{{ $data->email }}" required>
-                            </div>                            
-                            <div class="col-span-2">
-                                <input id="ch_{{ $data->id }}" type="checkbox" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
-                                <label for="ch_{{ $data->id }}" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Ganti Password</label>
-                            </div>  
-                            <div class="pass hidden col-span-1 max-md:col-span-2" id="passwordFields_{{ $data->id }}">
-                                <label for="password" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Password</label>
-                                <input type="password" name="password" id="password_{{ $data->id }}" value="" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
-                            </div>
-                            <div class="pass hidden col-span-1 max-md:col-span-2" id="confirmPasswordFields_{{ $data->id }}">
-                                <label for="confirm_password" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Confirm Password</label>
-                                <input type="password" name="confirm_password" id="confirm_password_{{ $data->id }}" value="" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
-                                <p class="text-sm text-red-400 hidden" id="pesan-edit_{{ $data->id }}">Konfirmasi password tidak sesuai !</p>
-                            </div>                           
-                            <div class="col-span-2">
-                                <label for="description" class="block mb- text-sm font-medium text-gray-900 dark:text-white">Product Description</label>
-                                <select name="akses" class=" bg-gray-50 border mb-2 text-base font-semibold border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" required>
-                                    <option value="user" {{ old('akses', $data->akses) == 'user' ? 'selected' : '' }} class="m-2 text-base">user</option>
-                                    <option value="admin" {{ old('akses', $data->akses) == 'admin' ? 'selected' : '' }} class="m-2 text-base">admin</option>
-                                </select>                    
-                            </div>
-                            <div class="col-span-2 flex justify-end w-full"> <!-- Menambahkan kelas flex justify-center -->
-                                <button type="submit" id="submit_{{ $data->id }}" class="text-white inline-flex items-center bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-10 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-                                    Ubah
-                                </button>
-                            </div>
-                        </div>                                  
-                    </form>                    
-                </div>
-            </div>
-        </div> 
-    @endforeach     --}}
+    </div>    
 
     {{-- Modal Hapus --}}
     @foreach ($kategori as $data)
@@ -210,102 +179,12 @@
         </div>
     @endforeach
 
-    {{-- <script>
-        // Skrip untuk search
-        document.addEventListener('DOMContentLoaded', function () {
-            const searchInput = document.getElementById('searchInput');
-            const searchForm = document.getElementById('searchForm');
-            const clearSearchBtn = document.getElementById('clearSearch');
+    <script>
+        // Skrip untuk tutup modal pesan
+        var closeButton = document.getElementById('popup-close-button');
 
-            if (searchInput.value !== '') {
-                clearSearchBtn.classList.remove('hidden');
-            } else {
-                clearSearchBtn.classList.add('hidden');
-            }
-
-            // Event listener untuk tombol "X"
-            clearSearchBtn.addEventListener('click', function() {
-                // Reset nilai input search
-                searchInput.value = '';
-                // Kirim formulir
-                searchForm.submit();
-            });
-
-            // Event listener untuk input search
-            searchInput.addEventListener('input', function() {
-                if (searchInput.value !== '') {
-                    // Jika nilai input tidak kosong, tampilkan elemen clearSearch
-                    clearSearch.classList.remove('hidden');
-                } else {
-                    // Jika nilai input kosong, sembunyikan elemen clearSearch
-                    clearSearch.classList.add('hidden');
-                }
-            });
+        closeButton.addEventListener('click', function() {
+            document.getElementById('popup-modal').style.display = 'none';
         });
-
-        // Skrip untuk reset input di modal tambah saat di tutup MODAL TAMBAH
-        document.addEventListener('DOMContentLoaded', function () {
-            const passwordField = document.getElementById('password');
-            const confirmPasswordField = document.getElementById('confirm_password');
-            const errorMessage = document.getElementById('pesan');
-            const submitButton = document.querySelector('button[type="submit"]');
-
-            confirmPasswordField.addEventListener('input', function () {
-                if (confirmPasswordField.value !== passwordField.value) {
-                    confirmPasswordField.classList.add('dark:text-red-500');
-                    confirmPasswordField.classList.add('focus:ring-red-500');
-                    errorMessage.classList.remove('hidden');
-                    submitButton.disabled = true;
-                } else {
-                    confirmPasswordField.classList.remove('dark:text-red-500');
-                    confirmPasswordField.classList.remove('focus:ring-red-500');
-                    errorMessage.classList.add('hidden');
-                    submitButton.disabled = false;
-                }
-            });
-        });
-
-        // Skrip untuk memunculkan ganti password
-        @foreach ($akun as $data)
-            document.getElementById("ch_{{ $data->id }}").addEventListener("change", function() {
-                var passwordField = document.getElementById("passwordFields_{{ $data->id }}");
-                var confirmPasswordField = document.getElementById("confirmPasswordFields_{{ $data->id }}");
-                var passwordInput = document.getElementById("password_{{ $data->id }}");
-                var confirmPasswordInput = document.getElementById("confirm_password_{{ $data->id }}");
-                var submitButton = document.getElementById("submit_{{ $data->id }}");
-                
-                if (this.checked) {
-                    passwordField.style.display = "block";
-                    confirmPasswordField.style.display = "block";
-                    submitButton.disabled = true;
-                } else {
-                    passwordField.style.display = "none";
-                    confirmPasswordField.style.display = "none";
-                    passwordInput.value = "";
-                    confirmPasswordInput.value = "";
-                    submitButton.disabled = false;
-                }
-            });  
-
-            document.getElementById("confirm_password_{{ $data->id }}").addEventListener("input", function () {
-                var passwordInput = document.getElementById("password_{{ $data->id }}");
-                var confirmPasswordInput = document.getElementById("confirm_password_{{ $data->id }}");
-                var errorMessage = document.getElementById("pesan-edit_{{ $data->id }}");
-                var submitButton = document.getElementById("submit_{{ $data->id }}");
-
-                if (confirmPasswordInput.value !== passwordInput.value) {
-                    confirmPasswordInput.classList.add("dark:text-red-500");
-                    confirmPasswordInput.classList.add("focus:ring-red-500");
-                    errorMessage.classList.remove('hidden');
-                    submitButton.disabled = true;
-                } else {
-                    confirmPasswordInput.classList.remove("dark:text-red-500");
-                    confirmPasswordInput.classList.remove("focus:ring-red-500");
-                    errorMessage.classList.add("hidden");
-                    submitButton.disabled = false;
-                }
-            });
-        @endforeach     
-    </script> --}}
-    
+    </script>    
 </x-app-layout>

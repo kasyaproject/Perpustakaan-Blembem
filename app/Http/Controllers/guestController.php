@@ -40,15 +40,16 @@ class guestController extends Controller
         return view('index', compact('kategori', 'buku', 'rekomendasi', 'search', 'fillter'));
     }
 
-    public function read($id)
+    public function read($judul)
     {
-        $buku = book::find($id);
+        $buku = Book::where('judul', $judul)->first();
         $rekomendasi = Book::orderBy('viewcount', 'desc')->take(6)->get();
 
         // Path to your PDF file
         $pdfFile = storage_path('app/public/' . $buku->buku);
 
         // Create Imagick object
+        ini_set('max_execution_time',3600);
         $image = new Imagick();
         $image->setResolution(150, 150); // Set resolution (optional)
 

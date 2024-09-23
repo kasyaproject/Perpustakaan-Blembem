@@ -25,6 +25,13 @@ class kategoriController extends Controller
     // untuk menyimpan KAtegori baru
     public function store(Request $request)
     {
+        // Ambil jumlah kategori dengan nama yang sama
+        $existingCount = Kategori::where('nama', $request->nama)->count();
+
+        if ($existingCount > 0) {
+            return back()->with('error', 'Kategori dengan nama yang sama sudah ada.');
+        }
+
         $data = kategori::count();
 
         $request->validate([
@@ -49,7 +56,7 @@ class kategoriController extends Controller
         $kategori->icon = $iconPath;
         $kategori->save();
 
-        return redirect()->route('kategori.index')->with('success', 'Buku berhasil ditambahkan');
+        return back()->with('success', 'Kategori baru berhasil ditambahkan');
     }
 
     // Hapus data kategori
@@ -62,6 +69,6 @@ class kategoriController extends Controller
 
         $kategori->delete();
 
-        return redirect('/kategori')->with('success', 'Data berhasil diperbarui.');
+        return back()->with('success', 'Kategori berhasil dihapus !');
     }
 }

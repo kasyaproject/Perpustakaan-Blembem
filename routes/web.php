@@ -22,7 +22,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', [guestController::class, 'index'])->name('guest')->middleware('guest');
-Route::get('/read/{id}', [guestController::class, 'read'])->name('read-book');
+Route::get('/read/{judul}', [guestController::class, 'read'])->name('read-book');
 
 Route::get('/login', [loginController::class, 'index']);
 Route::post('/login', [loginController::class, 'login']);

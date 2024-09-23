@@ -152,7 +152,7 @@
             <p class="font-semibold my-2 border-b-2 dark:text-white border-black dark:border-white">Rekomendasi Buku :</p>
             <div class="grid grid-cols-2 gap-4 py-4">
                 @foreach ($rekomendasi as $rekomendasi)
-                    <a href="{{ route('read-book', ['id' => $rekomendasi->id_buku]) }}" class="w-full bg-blue- p-2 rounded-md border-1 shadow-sm dark:border-gray-700 shadow-slate-400 dark:shadow-gray-700 dark:hover:shadow-gray-500 hover:shadow-slate-600">
+                    <a href="{{ route('read-book', ['judul' => $rekomendasi->judul]) }}" class="w-full bg-blue- p-2 rounded-md border-1 shadow-sm dark:border-gray-700 shadow-slate-400 dark:shadow-gray-700 dark:hover:shadow-gray-500 hover:shadow-slate-600">
                         <div class="w-full h-36 dark:bg-gray-700 rounded-md p-2">
                             <img class="object-scale-down w-full h-full" src="/storage/{{ $rekomendasi->cover }}" alt="">
                         </div>

@@ -53,13 +53,12 @@ class settingController extends Controller
                 $akun->password = $hashedPassword;
                 $akun->save();
 
-                return redirect()->route('setting.index', ['id' => $akun->id])->with('success', 'Password berhasil diperbarui!');
-                // return back()->route('dashboard')->with('success', 'Password berhasil diperbarui!');
+                return back()->with('success', 'Password berhasil diubah!');
             } else {
                 return back()->with('error', 'Konfirmasi Password harus sama!');
             }
         } else {
-            return back()->with('error', 'Password lama tidak benar!');
+            return back()->with('error', 'Password lama tidak sesuai!');
         }
     }    
 }

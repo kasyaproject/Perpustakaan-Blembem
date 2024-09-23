@@ -8,6 +8,7 @@ use App\Models\kategori;
 use Carbon\Carbon;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Imagick;
 
 class bookController extends Controller
@@ -39,7 +40,7 @@ class bookController extends Controller
 
         $buku->delete();
 
-        return redirect('/book')->with('success', 'Data berhasil diperbarui.');
+        return redirect('/book')->with('success', 'Buku berhasil dihapus.');
     }
 
     // view halaman untuk input buku baru
@@ -125,38 +126,50 @@ class bookController extends Controller
     // Melihat detail dari buku 
     public function detail($id)
     {
-        $book = book::all()->where('id_buku', $id)->first();
+        // Get book details from database
+        $book = Book::findOrFail($id);
 
-        // Path to your PDF file
-        $pdfFile = storage_path('app/public/' . $book->buku);
+        // Define cache key
+        $cacheKey = 'book_images_' . $book->id;
 
-        // Create Imagick object
-        $image = new Imagick();
-        $image->setResolution(150, 150); // Set resolution (optional)
+        // Check if images are already cached
+        if (Cache::has($cacheKey)) {
+            $imageFiles = Cache::get($cacheKey);
+        } else {
+            // Path to your PDF file
+            $pdfFile = storage_path('app/public/' . $book->buku);
 
-        // Read the PDF file
-        $image->readImage($pdfFile);
+            // Create Imagick object
+            $image = new Imagick();
+            $image->setResolution(150, 150); // Set resolution (optional)
 
-        // Array to store image filenames
-        $imageFiles = [];
+            // Read the PDF file
+            $image->readImage($pdfFile);
 
-        // Convert each page to JPG
-        foreach ($image as $index => $page) {
-            // Set the format to JPG
-            $page->setImageFormat('jpg');
+            // Array to store image filenames
+            $imageFiles = [];
 
-            // Set the filename for the JPG image
-            $jpgFilename = 'output_' . $index . '.jpg';
+            // Convert each page to JPG
+            foreach ($image as $index => $page) {
+                // Set the format to JPG
+                $page->setImageFormat('jpg');
 
-            /// Write the JPG image to disk in the public/pages directory
-            $page->writeImage('pages/' . $jpgFilename);
+                // Set the filename for the JPG image
+                $jpgFilename = 'output_' . $index . '.jpg';
 
-            // Push the filename to the array
-            $imageFiles[] = 'pages/' . $jpgFilename;
+                /// Write the JPG image to disk in the public/pages directory
+                $page->writeImage('pages/' . $jpgFilename);
+
+                // Push the filename to the array
+                $imageFiles[] = 'pages/' . $jpgFilename;
+            }
+
+            // Destroy the Imagick object
+            $image->destroy();
+
+            // Save images to cache
+            Cache::put($cacheKey, $imageFiles); // expirationTime is the cache expiration time
         }
-
-        // Destroy the Imagick object
-        $image->destroy();
 
         return view('book.detail', compact('book', 'imageFiles'));
     }

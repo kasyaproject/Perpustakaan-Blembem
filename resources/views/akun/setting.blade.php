@@ -1,7 +1,43 @@
+@if (session('success'))
+    <div id="popup-modal" tabindex="-1" class="flex dark:bg-gray-500 dark:bg-opacity-75 overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+        <div class="relative p-4 w-full max-w-md max-h-full">
+            <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">            
+                <div class="p-4 md:p-5 text-center">
+                    <svg class="mx-auto mb-4 text-gray-400 w-12 h-12 dark:text-gray-200" xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-check-circle" viewBox="0 0 16 16">
+                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
+                        <path d="m10.97 4.97-.02.022-3.473 4.425-2.093-2.094a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-1.071-1.05"/>
+                      </svg>
+                    <h3 class="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">Password berhasil diperbarui !</h3>
+                    <button id="popup-close-button" data-modal-hide="popup-modal" type="button" class="mt-4 text-white bg-blue-600 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center">
+                        Oke
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+@elseif (session('error'))
+    <div id="popup-modal" tabindex="-1" class="flex dark:bg-gray-500 dark:bg-opacity-75 overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+        <div class="relative p-4 w-full max-w-md max-h-full">
+            <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+                <div class="p-4 md:p-5 text-center">
+                    <svg class="mx-auto mb-4 text-gray-400 w-12 h-12 dark:text-gray-200" xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-exclamation-circle" viewBox="0 0 16 16">
+                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
+                        <path d="M7.002 11a1 1 0 1 1 2 0 1 1 0 0 1-2 0M7.1 4.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0z"/>
+                      </svg>
+                    <h3 class="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">{{ session('error') }}</h3>
+                    <button id="popup-close-button" data-modal-hide="popup-modal" type="button" class="mt-4 text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center">
+                        Oke
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>    
+@endif
+
 <x-app-layout>
     @section('sidebar#setting', 'bg-gray-100 dark:bg-gray-700')
 
-    <div class="p-4 mb-10">
+    <div class="p-4 mb-10"> 
         <div class="flex justify-start px-12 py-4">            
             <p class="font-semibold text-xl dark:text-white">Akun Setting</p>
         </div>
@@ -118,6 +154,7 @@
                         <div class="pass col-span-2 max-md:col-span-2" id="passwordFields_{{ $akun->id }}">
                             <label for="passwordbaru" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Password Baru</label>
                             <input type="password" name="passwordbaru" id="password_{{ $akun->id }}" value="" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
+                            <p class="text-sm text-red-400 hidden" id="pesan_{{ $akun->id }}">Password harus 8 karakter atau lebih !</p>
                         </div>
                         <div class="pass col-span-2 max-md:col-span-2" id="confirmPasswordFields_{{ $akun->id }}">
                             <label for="confirm_password" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Confirm Password baru</label>
@@ -172,7 +209,44 @@
     @endforeach
 
     <script>
-        // Skrip untuk memunculkan ganti password
+        // Skrip untuk tutup modal pesan
+        var closeButton = document.getElementById('popup-close-button');
+
+        closeButton.addEventListener('click', function() {
+            document.getElementById('popup-modal').style.display = 'none';
+        });
+
+        // Skrip untuk validate minimal 8 karakter untuk password
+        document.getElementById("password_{{ $akun->id }}").addEventListener("input", function () {
+            var passwordInput = document.getElementById("password_{{ $akun->id }}");
+            var errorMessage = document.getElementById("pesan_{{ $akun->id }}");
+            var submitButton = document.getElementById("submit_{{ $akun->id }}");
+
+            passwordInput.addEventListener('input', function () { // Check if the password is less than 8 characters 
+                if (passwordInput.value.length < 8) { 
+                    // Add a red border 
+                    passwordInput.classList.add('text-red-500');
+                    passwordInput.classList.add('dark:text-red-500');
+                    passwordInput.classList.add('focus:ring-red-500');
+                    passwordInput.classList.add('dark:focus:ring-red-500');
+                    passwordInput.classList.add('border-red-500'); 
+                    passwordInput.classList.add('dark:border-red-500'); 
+                    errorMessage.classList.remove('hidden');
+                    submitButton.disabled = true;
+                } else { // Remove the red border 
+                    passwordInput.classList.remove('text-red-500');
+                    passwordInput.classList.remove('dark:text-red-500');
+                    passwordInput.classList.remove('focus:ring-red-500');
+                    passwordInput.classList.remove('dark:focus:ring-red-500');
+                    passwordInput.classList.remove('border-red-500'); 
+                    passwordInput.classList.remove('dark:border-red-500'); 
+                    errorMessage.classList.add('hidden');
+                    submitButton.disabled = false;
+                } 
+            });
+        });
+
+        // Skrip untuk validasi password == confirm password
         document.getElementById("confirm_password_{{ $akun->id }}").addEventListener("input", function () {
             var passwordInput = document.getElementById("password_{{ $akun->id }}");
             var confirmPasswordInput = document.getElementById("confirm_password_{{ $akun->id }}");
@@ -190,6 +264,6 @@
                 errorMessage.classList.add("hidden");
                 submitButton.disabled = false;
             }
-        });    
+        }); 
     </script>
 </x-app-layout>

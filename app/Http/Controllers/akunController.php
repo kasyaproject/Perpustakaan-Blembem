@@ -48,7 +48,7 @@ class akunController extends Controller
         $akun->akses = $request->input('akses');
         $akun->save();
 
-        return redirect('/akun')->with('success', 'Registrasi akun Berhasil! Silahkan login');
+        return redirect('/akun')->with('success', 'Penambahan akun berhasil !');
     }
 
     public function update(Request $request, $id) {
@@ -61,7 +61,7 @@ class akunController extends Controller
         // Validasi data dari formulir
         $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|string|max:255', 
+            'email' => 'required|string|max:255',
             'akses' => 'required|string|max:255',
             // Tambahkan aturan validasi lainnya sesuai kebutuhan
         ]);
@@ -96,6 +96,6 @@ class akunController extends Controller
 
         $akun->delete();
 
-        return redirect('/akun')->with('success', 'Data berhasil diperbarui.');
+        return redirect('/akun')->with('success', 'Data berhasil dihapus !');
     }
 }

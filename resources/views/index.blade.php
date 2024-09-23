@@ -1,20 +1,4 @@
 <x-guest-layout>
-    
-    {{-- BANNER INFO --}}
-    {{-- <div class="flex justify-center items-center px-10 py-2 lg:px-0 lg:pt-12">
-        <div class="carosel m-1 lg:w-3/5 lg:h-96 rounded-md">
-            <img src="/asset/wallpaper.jpg" class="object-cover w-full h-full rounded-md" alt="">
-        </div>
-        <div class="m-1 lg:w-2/5 lg:h-96 rounded-md flex-col max-lg:hidden">
-            <div class="pb-1 lg:h-1/2 rounded-md flex items-center justify-center">
-                <img src="/asset/wallpaper.jpg" class="object-cover w-full h-full rounded-md" alt="">
-            </div>
-            <div class="pt-1 lg:h-1/2 rounded-md flex items-center justify-center">
-                <img src="/asset/wallpaper.jpg" class="object-cover w-full h-full rounded-md" alt="">
-            </div>
-        </div>
-    </div> --}}
-
     {{-- REKOMENDASI BUKU --}}
     <div class="font-semibold text-xl mx-6 pt-8 dark:text-white max-md:hidden">
         <p>Rekomendasi buku :</p>
@@ -22,7 +6,7 @@
     <div class="px-0 py-2 overflow-x-auto max-md:hidden">        
         <div class="flex relative min-w-min justify-start items-center">
             @foreach ($rekomendasi as $item)
-                <a href="{{ route('read-book', ['id' => $item->id_buku]) }}" class="flex flex-col bg-white mr-3 m-1 w-52 h-80 rounded-md items-center p-2 dark:text-white dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-600">
+                <a href="{{ route('read-book', ['judul' => $item->judul]) }}" class="flex flex-col bg-white mr-3 m-1 w-52 h-80 rounded-md items-center p-2 dark:text-white dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-600">
                     <img src="/storage/{{ $item->cover }}" class="flex object-cover w-36 h-56 p-2 rounded-md" alt="">
                     <span class="w-full px-2 pt-2 text-sm text-left ine-clamp-1 text-gray-600 dark:text-gray-400">{{ $item->penulis }}</span>
                     <span class="w-full px-1 font-semibold text-left line-clamp-2">{{ $item->judul }}</span>
@@ -87,7 +71,7 @@
             </form>            
             <div class="grid grid-cols-5 max-2xl:grid-cols-4 max-lg:grid-cols-3 max-sm:grid-cols-2 gap-4 p-3">
                 @foreach ($buku as $data)
-                    <a href="{{ route('read-book', ['id' => $data->id_buku]) }}" class="flex flex-col justify-between p-4 h-full max-sm:h-full text-center rounded-lg border-2 border-gray-200 hover:bg-gray-200 dark:hover:bg-gray-600 dark:border-gray-600">
+                    <a href="{{ route('read-book', ['judul' => $data->judul]) }}" class="flex flex-col justify-between p-4 h-full max-sm:h-full text-center rounded-lg border-2 border-gray-200 hover:bg-gray-200 dark:hover:bg-gray-600 dark:border-gray-600">
                         <div class="text-start">
                             <img src="/storage/{{ $data->cover }}" class="object-cover p-1 mb-4 w-full max-sm:h-36 md:h-72 max-lg:mb-2" alt="cover">
                             <p class="text-lg font-semibold line-clamp-2 dark:text-white">{{ $data->judul }}</p>
